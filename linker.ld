@@ -1,4 +1,4 @@
-/* linker.ld — Raspberry Pi 5 bare-metal kernel */
+/* linker.ld — Raspberry Pi 5 bare‑metal kernel */
 ENTRY(_start)
 
 SECTIONS
@@ -6,13 +6,13 @@ SECTIONS
     /* Firmware loads kernel8.img at 0x80000 */
     . = 0x80000;
 
-    /* Code (text) */
+    /* Code section */
     .text : ALIGN(4096) {
-        *(.text.boot)
-        *(.text*)
+        *(.text.boot)     /* boot.S */
+        *(.text*)         /* all other code */
     }
 
-    /* Read-only data */
+    /* Read‑only data */
     .rodata : ALIGN(4096) {
         *(.rodata*)
     }
@@ -22,7 +22,7 @@ SECTIONS
         *(.data*)
     }
 
-    /* Uninitialized data (zeroed at runtime) */
+    /* Uninitialized data (zeroed at boot) */
     .bss : ALIGN(4096) {
         __bss_start = .;
         *(.bss*)
@@ -30,7 +30,8 @@ SECTIONS
         __bss_end = .;
     }
 
-    /* Define stack at top of 16MB RAM region */
-    . = 0x2000000;   /* 32 MB mark */
+    /* Define stack at 32MB mark (safe region) */
+    . = 0x2000000;
     _stack_top = .;
 }
+
